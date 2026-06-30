@@ -1,13 +1,11 @@
 import os
 import sys
 
-# Resolve model paths
+# Resolve paths locally within this model directory
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-BACKEND_DIR = os.path.join(BASE_DIR, "..", "..", "backend")
 
-# Inject backend path so backend app modules are importable
-if BACKEND_DIR not in sys.path:
-    sys.path.insert(0, BACKEND_DIR)
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
 
 from app.services.fallback import fallback_engine
 from app.services.formatter import formatter
