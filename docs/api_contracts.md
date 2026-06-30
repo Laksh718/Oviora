@@ -84,8 +84,73 @@ Predicts PCOS cycle patterns and ovulation timing using ensemble machine learnin
 
 ---
 
+### Lab Intelligence Engine (LIE-v1.0)
+Provides AI-assisted extraction and medical analysis of laboratory reports (PCOS/PCOD hormone panels, thyroid levels, etc.).
+
+#### `POST /upload`
+- **Description**: Uploads a laboratory report file (PDF, PNG, JPG, JPEG).
+- **Request Body**: Multipart Form Data with key `file`.
+- **Response**: `201 Created`
+  ```json
+  {
+    "success": true,
+    "message": "File uploaded successfully.",
+    "file_id": "c3d5e2a1b9f649aa.png"
+  }
+  ```
+
+#### `POST /analyze/{file_id}`
+- **Description**: Standardizes OCR data, applies medical reference ranges, runs rule validation, and generates structured analysis via Gemini.
+- **Path Parameter**: `file_id` (string)
+- **Response**: `200 OK`
+  ```json
+  {
+    "success": true,
+    "provider": "gemini",
+    "report": {
+      "executive_summary": "Analysis generated using gemini. Overall confidence score: 0.995.",
+      "biomarkers": [
+        {
+          "Biomarker": "TSH",
+          "Value": 5.0,
+          "Unit": "uIU/mL",
+          "Status": "high",
+          "Reference Range": "0.5-3.0"
+        }
+      ],
+      "assessments": {
+        "hormonal": ["LH/FSH Ratio: 0.67 ..."],
+        "thyroid": ["TSH is high, suggesting potential thyroid dysfunction ..."]
+      },
+      "derived_metrics": { "LH_FSH_Ratio": 0.67 },
+      "confidence_score": 0.995,
+      "disclaimer": "This report is an AI-assisted clinical decision-support prototype..."
+    },
+    "downloads": {
+      "json": "/reports/c3d5e2a1b9f649aa.json",
+      "markdown": "/reports/c3d5e2a1b9f649aa.md",
+      "html": "/reports/c3d5e2a1b9f649aa.html",
+      "pdf": "/reports/c3d5e2a1b9f649aa.pdf"
+    }
+  }
+  ```
+
+#### `GET /reports`
+- **Description**: Lists all generated reports saved on the server.
+- **Response**: `200 OK`
+  ```json
+  [
+    {
+      "file_id": "c3d5e2a1b9f649aa.png",
+      "formats": ["json", "md", "html", "pdf"],
+      "created_at": "2026-06-30T12:36:14Z"
+    }
+  ]
+  ```
+
+---
+
 ### Future Engines
-- Lab Intelligence Engine (LIE-v1.0)
 - Vision Intelligence Engine (VIE-v1.0)
 - Recommendation Intelligence Engine (RIE-v1.0)
 - Nutrition Intelligence Engine (NIE-v1.0)
